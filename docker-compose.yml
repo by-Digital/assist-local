@@ -1,0 +1,28 @@
+version: '3'
+
+name: 'bydigital-assist-local'
+services:
+  wordpress:
+    image: wordpress:latest
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content:/var/www/html/wp-content
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST:-db:3306}
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASS:-wordpress}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+      WORDPRESS_CONFIG_EXTRA: |
+          define('WP_SITEURL', 'http://content.${SITE_NAME}.local/');
+          define('WP_HOME', 'http://content.${SITE_NAME}.local/');
+    extra_hosts:
+     - "content.${SITE_NAME}.local:127.0.0.1"
+    hostname: content.${SITE_NAME}.local
+    domainname: local
+    
+volumes:
+  db_data:
+  wp_data:
